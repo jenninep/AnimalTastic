@@ -8,7 +8,7 @@ $(document).ready(function(){
 	var smurfs = ['Smurfette', 'Brainy', 'Hefty', 'Papa', 'Vanity', 'Baby'];
 
 	// makes an ajax call to giphy on click and displays the appropriate results //
-	$('body').on('click', '.smurf', function() {
+	$(document).on('click', '.smurf', function() {
 
 		// "this" refers to ".smurf" from above //
 		var search = $(this).attr("data-name");
@@ -27,7 +27,7 @@ $(document).ready(function(){
 			var results = response.data;
 
 			// loop through the response of the ajax call, create the desired HTML elements and prepend the gifs to these elements //
-			for (var n = 0; n < results.length; n++) {
+			for (var i = 0; i < results.length; i++) {
 
 				var smurfDiv = $('<div>');
 				var smurfImage = $('<img>');
@@ -35,11 +35,11 @@ $(document).ready(function(){
 
 				$("#smurfGifs").prepend(smurfDiv);
 
-				smurfImage.attr('src', results[n].images.fixed_height_still.url);
-				smurfImage.attr('data-still', results[n].images.fixed_height_still.url);
-				smurfImage.attr('data-animate', results[n].images.fixed_height.url);
+				smurfImage.attr('src', results[i].images.fixed_height_still.url);
+				smurfImage.attr('data-still', results[i].images.fixed_height_still.url);
+				smurfImage.attr('data-animate', results[i].images.fixed_height.url);
 				smurfImage.attr('data-state', "still");
-				smurfImage.addClass('gifContainer')
+				smurfImage.addClass('results')
 			}
 
 		});
@@ -62,11 +62,33 @@ $(document).ready(function(){
 		}
 
 	}
+	// on first click set image source to data-animate
+
+	// on second click set image source to data-still
+
+	function animateImage (){
+		console.log("click working")
+		var state = $(this).attr('data-state');
+		console.log(state);
+		 
+		 if (state === 'still') {
+	        	$(this).attr('src', $(this).data('animate'));
+	        	$(this).attr('data-state', 'animate');
+	        	console.log('clicked1');
+	        } else { 
+	            $(this).attr('src', $(this).data('still'));
+	        	$(this).attr('data-state', 'still');		
+	        	console.log('clicked2');	
+				}
+			};
+		
+	
+
 
 	function newButton() {
-
+			console.log('newbutton');
 		// set the new smurf name to the value of the input box //
-		var newSmurfName = $("#smurf-input").val().trim();
+		var newSmurfName = $("#smurf-input").val();
 		console.log(newSmurfName);
 
 		// if newSmurfName isn't blank //
@@ -97,24 +119,25 @@ $(document).ready(function(){
 
 		// if newSmurfName is blank //
 		else {
-			console.log("Please enter a smurf")
+			alert("Please enter a smurf")
 		}
 
 	}
 
 	// add a new smurf button by calling our newButton() function //
-	$("body").on("click", "#addSmurf", function() {
+	$(document).on("click", "#addSmurf", function() {
 
 		console.log("click working");
 		newButton();
 
 	});
 
+	$(document).on("click", ".results", animateImage);
 	// use enter key to add a button, and stop the page from reloading //
 	// you could also change the <form> to a plain <div> in the HTML and not have to use this event.preventDefault //
 	$('form').keypress(function (event) {
 
-		if (event.keyCode == 13) {
+		if (event.keyCode === 13) {
 
 			event.preventDefault();
 			newButton();
